@@ -1,0 +1,9 @@
+@if (user) {
+    <h2>Welcome, {{user.name}}!</h2>
+    <a mat-button color="primary" routerLink="/games">Go To Games<mat-icon>games</mat-icon></a>
+    <br/><br/>
+    <button mat-raised-button color="primary" (click)="auth.logout()" id="logout">Logout</button>
+  } @else {
+    <p>Please log in to play Jan Ken Pon.</p>
+    <button mat-raised-button color="primary" (click)="auth.login()" id="login">Login</button>
+  }

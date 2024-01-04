@@ -1,0 +1,5 @@
+okta:
+  oauth2:
+    issuer: https://jsrosas.eu.auth0.com/
+    client-id: 7niCE1HovcboxSzkWLVjHwYHyNkkIgC1
+    client-secret: UfCXbi3OWA7lLRx9dSUy0I696FG728T7NmYklih1PEmVPkozhebM4GEn2LVin9p1
