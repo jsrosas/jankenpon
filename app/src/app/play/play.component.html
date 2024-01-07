@@ -1,0 +1,41 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+      <li class="breadcrumb-item"><a routerLink="/games">Games</a></li>
+      <li class="breadcrumb-item active">Play Game</li>
+    </ol>
+</nav>
+  
+  <h2>Game Information</h2>
+  @if (feedback.message) {
+  <div class="alert alert-{{feedback.type}}">{{ feedback.message }}</div>
+  }
+  @if (game) {
+    <form #matchForm="ngForm" (ngSubmit)="save()">
+      <mat-card>
+        <mat-card-content>
+          <div style="display: block; margin-left: auto;margin-right: auto; width: 40%;">
+            <h3>Make your selection: {{playerSelectionLabel | uppercase}}</h3>
+            <mat-button-toggle-group #group="matButtonToggleGroup" (change)="playerSelection = $event.source.value">
+              <mat-button-toggle type=number value=0 aria-label="Text align left">
+                <fa-icon [icon]="faHandBackFist" size="6x"></fa-icon>
+              </mat-button-toggle>
+              <mat-button-toggle type=number value=1 aria-label="Text align center">
+                <fa-icon [icon]="faScroll" size="6x"></fa-icon>
+              </mat-button-toggle>
+              <mat-button-toggle type=number value=2 aria-label="Text align right">
+                <fa-icon [icon]="faScissors" size="6x"></fa-icon>
+              </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+        </mat-card-content>
+        <mat-card-footer>
+          <div role="group">
+            <button type="submit" mat-raised-button color="primary" [disabled]="!playerSelection" id="save">Submit</button>
+            <button type="button" mat-button color="accent" (click)="cancel()" id="cancel">Cancel</button>
+          </div>
+        </mat-card-footer>
+      </mat-card>
+    </form>
+  }
+  

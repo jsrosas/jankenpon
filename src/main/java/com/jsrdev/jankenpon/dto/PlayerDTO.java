@@ -9,11 +9,13 @@ import lombok.Data;
 public class PlayerDTO {
     private Long id;
     private String name;
+    private boolean isDefaultComputer;
 
     public static PlayerDTO buildFromRecord(Player player){
         return PlayerDTO.builder()
                 .id(player.getId())
                 .name(player.getName())
+                .isDefaultComputer(player.isDefaultComputer())
                 .build();
     }
 }

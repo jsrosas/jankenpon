@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "game")
@@ -18,13 +19,11 @@ public class Game {
     @ManyToOne(cascade = CascadeType.PERSIST)
     private User user;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "player_one_id")
-    private Player player1;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Player> players;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "player_two_id")
-    private Player player2;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Match> matches;
 
     public Game() {}
 
@@ -56,20 +55,20 @@ public class Game {
         this.user = user;
     }
 
-    public Player getPlayer1() {
-        return player1;
+    public Set<Player> getPlayers() {
+        return players;
     }
 
-    public void setPlayer1(Player player1) {
-        this.player1 = player1;
+    public void setPlayers(Set<Player> players) {
+        this.players = players;
     }
 
-    public Player getPlayer2() {
-        return player2;
+    public Set<Match> getMatches() {
+        return matches;
     }
 
-    public void setPlayer2(Player player2) {
-        this.player2 = player2;
+    public void setMatches(Set<Match> matches) {
+        this.matches = matches;
     }
 
     @Override
@@ -89,7 +88,7 @@ public class Game {
 
     @Override
     public String toString() {
-        return "Group{" +
+        return "Game{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

@@ -8,7 +8,7 @@ import { MatCardModule } from '@angular/material/card'
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { map, switchMap, of } from 'rxjs';
 import { Game } from '../model/Game';
-import { JsonPipe } from '@angular/common';
+import { Player } from '../model/player';
 
 @Component({
   selector: 'app-game-edit',
@@ -21,7 +21,6 @@ import { JsonPipe } from '@angular/common';
     MatIconModule,
     MatCardModule,
     RouterLink,
-    JsonPipe
   ],
   templateUrl: './game-edit.component.html',
   styleUrl: './game-edit.component.css'
@@ -30,6 +29,7 @@ import { JsonPipe } from '@angular/common';
 export class GameEditComponent implements OnInit {
 
   game!: Game;
+  player!: Player;
   feedback: any = {};
 
   constructor(private route: ActivatedRoute, private router: Router,
@@ -43,7 +43,6 @@ export class GameEditComponent implements OnInit {
         if (id === 'new') {
           const game: Game = {
             name: '',
-            player1: { name: ''}
           }
           return of(game);
         }
@@ -52,6 +51,8 @@ export class GameEditComponent implements OnInit {
     ).subscribe({
       next: game => {
         this.game = game;
+        const player = game.players?.find(player => !player.defaultComputer);
+        this.player = player ?? {name:'', defaultComputer: false}
         this.feedback = {};
       },
       error: () => {
@@ -62,6 +63,7 @@ export class GameEditComponent implements OnInit {
 
   save() {
     const id = this.game.id;
+    this.game.players = [this.player]
     const method = id ? 'put' : 'post';
 
     this.http[method](`/api/game${id ? '/' + id : ''}`, this.game).subscribe({

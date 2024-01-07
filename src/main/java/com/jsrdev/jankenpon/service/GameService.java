@@ -47,7 +47,7 @@ public class GameService {
         game.setUser(user.orElse(new User(userId,
                 details.get("name").toString(), details.get("email").toString())));
         Player computerDefaultPlayer = playerRepository.findById(1L).orElseThrow();
-        game.setPlayer2(computerDefaultPlayer);
+        game.getPlayers().add(computerDefaultPlayer);
         Game result = gameRepository.save(game);
         return GameDTO.buildFromRecord(result);
     }

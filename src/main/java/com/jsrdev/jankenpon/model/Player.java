@@ -2,6 +2,8 @@ package com.jsrdev.jankenpon.model;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "players")
 public class Player {
@@ -11,8 +13,10 @@ public class Player {
 
     private String name;
 
-    @OneToOne
-    private Game game;
+    @ManyToMany(cascade = CascadeType.MERGE)
+    private Set<Game> games;
+
+    private boolean isDefaultComputer;
 
     public Player () {}
 
@@ -36,12 +40,20 @@ public class Player {
         this.name = name;
     }
 
-    public Game getGame() {
-        return game;
+    public Set<Game> getGames() {
+        return games;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setGames(Set<Game> games) {
+        this.games = games;
+    }
+
+    public boolean isDefaultComputer() {
+        return isDefaultComputer;
+    }
+
+    public void setDefaultComputer(boolean defaultComputer) {
+        isDefaultComputer = defaultComputer;
     }
 
     @Override

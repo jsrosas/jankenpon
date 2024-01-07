@@ -21,18 +21,19 @@
       <mat-header-cell *matHeaderCellDef> Game </mat-header-cell>
       <mat-cell *matCellDef="let item"> {{ item.name }} </mat-cell>
     </ng-container>
-    <ng-container matColumnDef="player1">
-      <mat-header-cell *matHeaderCellDef> First Player </mat-header-cell>
-      <mat-cell *matCellDef="let item"> {{ item.player1.name }} </mat-cell>
+    <ng-container matColumnDef="players">
+      <mat-header-cell *matHeaderCellDef> Players </mat-header-cell>
+      <mat-cell *matCellDef="let item">
+        <ng-container *ngFor="let player of item.players; let i=index; let isLast=last">
+          {{player.name}} <span *ngIf="!isLast">&#44;&nbsp;</span> 
+      </ng-container>
+      </mat-cell>
     </ng-container>
-    <ng-container matColumnDef="player2">
-      <mat-header-cell *matHeaderCellDef> Second Player </mat-header-cell>
-      <mat-cell *matCellDef="let item"> {{ item.player2.name }} </mat-cell>
-    </ng-container>
+    
     <ng-container matColumnDef="actions">
       <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
       <mat-cell *matCellDef="let item">
-        <a [routerLink]="['../game/play', item.id ]" mat-raised-button color="primary"><mat-icon>play_arrow</mat-icon>Play</a>&nbsp;
+        <a [routerLink]="['../game/', item.id, 'play' ]" mat-raised-button color="primary"><mat-icon>play_arrow</mat-icon>Play</a>&nbsp;
         <a [routerLink]="['../game', item.id ]" mat-raised-button color="accent"><mat-icon>delete</mat-icon>Edit</a>&nbsp;
         <button (click)="delete(item)" mat-button color="alert"><mat-icon>delete</mat-icon></button>
       </mat-cell>

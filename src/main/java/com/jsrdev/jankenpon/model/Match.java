@@ -1,5 +1,6 @@
 package com.jsrdev.jankenpon.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -8,10 +9,11 @@ public class Match {
     @Id
     @GeneratedValue
     private Long id;
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.MERGE)
     private User user;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JsonIgnore
     private Game game;
 
     private int player1Choice;
@@ -19,6 +21,14 @@ public class Match {
     private int player2Choice;
 
     public Match() {}
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public User getUser() {
         return user;
@@ -42,5 +52,13 @@ public class Match {
 
     public void setPlayer2Choice(int player2Choice) {
         this.player2Choice = player2Choice;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 }
