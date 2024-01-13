@@ -22,6 +22,7 @@ import {
   animate,
   transition,
 } from '@angular/animations';
+import { GameSelectComponent } from '../game-select/game-select.component';
 
 @Component({
   selector: 'app-play',
@@ -39,6 +40,7 @@ import {
     UpperCasePipe,
     JsonPipe,
     ResultComponent,
+    GameSelectComponent
   ],
   templateUrl: './play.component.html',
   styleUrl: './play.component.css',
@@ -95,6 +97,10 @@ export class PlayComponent {
     });
   }
 
+  public onPlayerSelectionEvent($event: number){
+    this.playerSelection = $event;
+  }
+
   public get playerSelectionLabel(){
     return Choice[this.playerSelection];
   }
@@ -114,7 +120,6 @@ export class PlayComponent {
     this.http.post<Match>(`api/game/${this.game.id}/match`,match, {headers: headers}).pipe(delay(700)).subscribe(
       response => {
         this.resultMatch = response;
-        console.log(this.resultMatch);
         this.previousMatches.push(response)
         this.loading = false;
       }

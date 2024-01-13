@@ -1,7 +1,6 @@
 package com.jsrdev.jankenpon.web;
 
 import com.jsrdev.jankenpon.dto.GameDTO;
-import com.jsrdev.jankenpon.dto.MatchDTO;
 import com.jsrdev.jankenpon.model.Game;
 import com.jsrdev.jankenpon.model.GameRepository;
 import com.jsrdev.jankenpon.service.GameService;

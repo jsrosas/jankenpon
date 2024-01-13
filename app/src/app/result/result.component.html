@@ -1,24 +1,20 @@
-<mat-card style="margin-top: 10px;">
-    <mat-card-header>
-        <mat-card-title>Computer Selection: {{computerSelectionLabel | uppercase}}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-        @if(match){
-            <div style="display: block; margin-left: auto;margin-right: auto; width: 40%;">
-                <mat-button-toggle-group #group="matButtonToggleGroup" value={{match.player2Choice}} [disabled]="true">
-                    <mat-button-toggle type=number value=0 aria-label="Text align left">
-                    <fa-icon [icon]="faHandBackFist" size="6x"></fa-icon>
-                    </mat-button-toggle>
-                    <mat-button-toggle type=number value=1 aria-label="Text align center">
-                    <fa-icon [icon]="faScroll" size="6x"></fa-icon>
-                    </mat-button-toggle>
-                    <mat-button-toggle type=number value=2 aria-label="Text align right">
-                    <fa-icon [icon]="faScissors" size="6x"></fa-icon>
-                    </mat-button-toggle>
-                </mat-button-toggle-group>
-            </div>
-        }
-    </mat-card-content>
-</mat-card>
+@if(match){
+    <mat-card style="margin-top: 10px;">
+        <mat-card-header>
+            <mat-card-title>Computer Selection: {{computerSelectionLabel | uppercase}}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <app-game-select [match]="match" [isReadOnly]="true"></app-game-select>
+        </mat-card-content>
+        <mat-card-footer>
+            <mat-card-title class="title_center alert-success">
+                {{resultLabel}}
+            </mat-card-title>
+        </mat-card-footer>
+    </mat-card>
+    @if(match.gameStatistics){
+        <app-game-statistics [statistics]="match.gameStatistics"></app-game-statistics>
+    }
+}
 
 

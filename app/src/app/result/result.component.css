@@ -1,0 +1,6 @@
+.title_center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+  }

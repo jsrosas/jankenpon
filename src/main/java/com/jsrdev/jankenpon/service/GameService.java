@@ -1,11 +1,8 @@
 package com.jsrdev.jankenpon.service;
 
 import com.jsrdev.jankenpon.dto.GameDTO;
-import com.jsrdev.jankenpon.dto.MatchDTO;
-import com.jsrdev.jankenpon.dto.PlayerDTO;
 import com.jsrdev.jankenpon.exception.NotFoundException;
 import com.jsrdev.jankenpon.model.*;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
