@@ -1,8 +1,9 @@
 package com.jsrdev.jankenpon.web;
 
-import com.jsrdev.jankenpon.exception.NotFoundException;
-import com.jsrdev.jankenpon.model.*;
-import jakarta.servlet.http.HttpServletRequest;
+import com.jsrdev.jankenpon.dto.MatchDTO;
+import com.jsrdev.jankenpon.model.Match;
+import com.jsrdev.jankenpon.service.GameStatisticsService;
+import com.jsrdev.jankenpon.service.MatchService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,24 +14,18 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/game/{gameId}")
 public class MatchController {
     @Autowired
-    GameRepository gameRepository;
+    MatchService matchService;
 
     @Autowired
-    MatchRepository matchRepository;
-
-    @Autowired
-    UserRepository userRepository;
+    GameStatisticsService gameStatisticsService;
 
     private final Logger log = LoggerFactory.getLogger(MatchController.class);
 
@@ -39,25 +34,20 @@ public class MatchController {
                                   @AuthenticationPrincipal OAuth2User principal,
                                   @PathVariable Long gameId) {
         log.info("Request to create match: {}", match);
-        Map<String, Object> details = principal.getAttributes();
-        String userId = details.get("sub").toString();
-        Optional<User> user = userRepository.findById(userId);
-        Optional<Game> game = Optional
-                .ofNullable(gameRepository.findById(gameId).orElseThrow(() -> new NotFoundException("Game Not Found")));
-        return game.map(value -> {
-            match.setGame(value);
-            match.setUser(user.orElse(new User(userId,
-                    details.get("name").toString(), details.get("email").toString())));
-            value.getMatches().add(match);
-            gameRepository.save(value);
+        Optional<MatchDTO> result = matchService.saveMatch(match, gameId, principal);
+        return result.map(value -> {
             try {
+                value.setGameStatistics(gameStatisticsService.buildStatisticsFromGame(match.getGame()));
                 return ResponseEntity.created(
-                        new URI(
-                            "/api/game/" + value.getId() + "/match/" + match.getId())
-                        ).body(match);
+                            generateCreatedURI(gameId, value)
+                            ).body(result);
             } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
+               return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    private URI generateCreatedURI(Long gameId, MatchDTO matchDTO) throws URISyntaxException{
+        return new URI("/api/game/" + gameId + "/match/" + matchDTO.getId());
     }
 }

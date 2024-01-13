@@ -93,4 +93,9 @@ public class Game {
                 ", name='" + name + '\'' +
                 '}';
     }
+
+    public static Player findHumanPlayer(Game game){
+        return game.getPlayers().stream().filter(p->!p.isDefaultComputer()).findFirst().orElseThrow();
+    }
+
 }

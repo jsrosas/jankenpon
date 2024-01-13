@@ -5,5 +5,5 @@ export interface Game {
   id?: number | null;
   name: string;
   players?: Player[];
-  matches?: Match[]
+  matches: Match[]
 }

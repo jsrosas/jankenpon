@@ -7,6 +7,7 @@ import java.util.Set;
 @Entity
 @Table(name = "players")
 public class Player {
+    public final static Long DEFAULT_COMPUTER_ID = 1L;
     @Id
     @GeneratedValue
     private Long id;

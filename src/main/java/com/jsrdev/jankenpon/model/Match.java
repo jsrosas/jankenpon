@@ -2,6 +2,7 @@ package com.jsrdev.jankenpon.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "match")
@@ -19,6 +20,10 @@ public class Match {
     private int player1Choice;
 
     private int player2Choice;
+
+    private Long winnerId;
+
+    private boolean isTie;
 
     public Match() {}
 
@@ -60,5 +65,21 @@ public class Match {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public Long getWinnerId() {
+        return winnerId;
+    }
+
+    public void setWinnerId(Long winnerId) {
+        this.winnerId = winnerId;
+    }
+
+    public boolean isTie() {
+        return isTie;
+    }
+
+    public void setTie(boolean tie) {
+        isTie = tie;
     }
 }

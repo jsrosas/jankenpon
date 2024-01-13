@@ -43,6 +43,7 @@ export class GameEditComponent implements OnInit {
         if (id === 'new') {
           const game: Game = {
             name: '',
+            matches: []
           }
           return of(game);
         }

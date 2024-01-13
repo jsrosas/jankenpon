@@ -5,6 +5,7 @@ export interface Match {
     game?: Game;
     player1Choice : number;
     player2Choice? : number;
+    isTie: boolean
 }
 
 export enum Choice {

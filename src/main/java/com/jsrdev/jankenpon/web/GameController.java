@@ -1,6 +1,7 @@
 package com.jsrdev.jankenpon.web;
 
 import com.jsrdev.jankenpon.dto.GameDTO;
+import com.jsrdev.jankenpon.dto.MatchDTO;
 import com.jsrdev.jankenpon.model.Game;
 import com.jsrdev.jankenpon.model.GameRepository;
 import com.jsrdev.jankenpon.service.GameService;
@@ -55,16 +56,21 @@ public class GameController {
     }
 
     @PutMapping("/game/{id}")
-    ResponseEntity<GameDTO> updateGame(@Valid @RequestBody Game game, @AuthenticationPrincipal OAuth2User principal) {
+    ResponseEntity<?> updateGame(@Valid @RequestBody Game game, @AuthenticationPrincipal OAuth2User principal) {
         log.info("Request to update game: {}", game);
-        GameDTO result = gameService.saveGame(game, principal);
-        return ResponseEntity.ok().body(result);
+        Optional<GameDTO> result = gameService.updateGame(game, principal);
+        return result.map(value -> {
+            try {
+                return ResponseEntity.created(
+                        generateCreatedURI(value.getId())
+                ).body(result);
+            } catch (URISyntaxException e) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/game/{id}")
-    public ResponseEntity<?> deleteGame(@PathVariable Long id) {
-        log.info("Request to delete game: {}", id);
-        gameService.deleteGame(id);
-        return ResponseEntity.ok().build();
+    private URI generateCreatedURI(Long gameId) throws URISyntaxException{
+        return new URI("/api/game/" + gameId);
     }
 }

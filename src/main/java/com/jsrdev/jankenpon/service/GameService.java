@@ -1,7 +1,9 @@
 package com.jsrdev.jankenpon.service;
 
 import com.jsrdev.jankenpon.dto.GameDTO;
+import com.jsrdev.jankenpon.dto.MatchDTO;
 import com.jsrdev.jankenpon.dto.PlayerDTO;
+import com.jsrdev.jankenpon.exception.NotFoundException;
 import com.jsrdev.jankenpon.model.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,13 +48,22 @@ public class GameService {
         Optional<User> user = userRepository.findById(userId);
         game.setUser(user.orElse(new User(userId,
                 details.get("name").toString(), details.get("email").toString())));
-        Player computerDefaultPlayer = playerRepository.findById(1L).orElseThrow();
+        Player computerDefaultPlayer = playerRepository.findById(Player.DEFAULT_COMPUTER_ID).orElseThrow();
         game.getPlayers().add(computerDefaultPlayer);
         Game result = gameRepository.save(game);
         return GameDTO.buildFromRecord(result);
     }
 
-    public void deleteGame(Long id){
-        gameRepository.deleteById(id);
+    public Optional<GameDTO> updateGame(Game game, OAuth2User principal) {
+        Optional<Game> record = Optional
+                .ofNullable(gameRepository.findById(game.getId()).orElseThrow(() -> new NotFoundException("Game Not Found")));
+        return Optional.of(record.map(gameRecord -> {
+            gameRecord.setName(game.getName());
+            Player player = Game.findHumanPlayer(game);
+            Player existingPlayer = Game.findHumanPlayer(gameRecord);
+            existingPlayer.setName(player.getName());
+            gameRepository.save(gameRecord);
+            return GameDTO.buildFromRecord(gameRecord);
+        }).orElseThrow());
     }
 }
