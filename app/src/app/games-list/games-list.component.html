@@ -35,7 +35,6 @@
       <mat-cell *matCellDef="let item">
         <a [routerLink]="['../game/', item.id, 'play' ]" mat-raised-button color="primary"><mat-icon>play_arrow</mat-icon>Play</a>&nbsp;
         <a [routerLink]="['../game', item.id ]" mat-raised-button color="accent"><mat-icon>delete</mat-icon>Edit</a>&nbsp;
-        <button (click)="delete(item)" mat-button color="alert"><mat-icon>delete</mat-icon></button>
       </mat-cell>
     </ng-container>
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

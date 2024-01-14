@@ -1,11 +1,11 @@
 import { Component, } from '@angular/core';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { Game } from '../model/Game';
+import { GameService } from '../service/game.service';
 
 @Component({
   selector: 'app-games-list',
@@ -16,7 +16,6 @@ import { Game } from '../model/Game';
     MatButtonModule, 
     MatTableModule, 
     MatIconModule, 
-    HttpClientModule
   ],
   templateUrl: './games-list.component.html',
   styleUrl: './games-list.component.css'
@@ -28,33 +27,15 @@ export class GamesListComponent {
   displayedColumns = ['id', 'players', 'actions'];
   feedback: any = {};
 
-  constructor(private http: HttpClient) {
+  constructor(private gameService: GameService ) {
   }
 
   ngOnInit() {
     this.loading = true;
-    this.http.get<Game[]>('api/games').subscribe((data: Game[]) => {
+    this.gameService.getGames().subscribe((data: Game[]) => {
       this.games = data;
       this.loading = false;
       this.feedback = {};
     });
   }
-
-  delete(game: Game): void {
-    if (confirm(`Are you sure you want to delete ${game.name}?`)) {
-      this.http.delete(`api/game/${game.id}`).subscribe({
-        next: () => {
-          this.feedback = {type: 'success', message: 'Delete was successful!'};
-          setTimeout(() => {
-            this.ngOnInit();
-          }, 1000);
-        },
-        error: () => {
-          this.feedback = {type: 'warning', message: 'Error deleting.'};
-        }
-      });
-    }
-  }
-
-  protected readonly event = event;
 }

@@ -9,6 +9,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { map, switchMap, of } from 'rxjs';
 import { Game } from '../model/Game';
 import { Player } from '../model/player';
+import { GameService } from '../service/game.service';
 
 @Component({
   selector: 'app-game-edit',
@@ -32,8 +33,7 @@ export class GameEditComponent implements OnInit {
   player!: Player;
   feedback: any = {};
 
-  constructor(private route: ActivatedRoute, private router: Router,
-    private http: HttpClient) {
+  constructor(private route: ActivatedRoute, private router: Router, private gameService: GameService) {
   }
 
   ngOnInit() {
@@ -47,7 +47,7 @@ export class GameEditComponent implements OnInit {
           }
           return of(game);
         }
-        return this.http.get<Game>(`api/game/${id}`);
+        return this.gameService.getGame(id);
       })
     ).subscribe({
       next: game => {
@@ -66,8 +66,8 @@ export class GameEditComponent implements OnInit {
     const id = this.game.id;
     this.game.players = [this.player]
     const method = id ? 'put' : 'post';
-
-    this.http[method](`/api/game${id ? '/' + id : ''}`, this.game).subscribe({
+    this.gameService.saveGame(this.game, method, id)
+    this.gameService.saveGame(this.game, method, id).subscribe({
       next: () => {
         this.feedback = {type: 'success', message: 'Save was successful!'};
         setTimeout(async () => {
