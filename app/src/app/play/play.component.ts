@@ -1,28 +1,26 @@
-import { Component } from '@angular/core';
-import { UpperCasePipe, JsonPipe } from '@angular/common';
-import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
+import {
+  animate,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
+import { AsyncPipe, UpperCasePipe } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { Component, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card'
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Game } from '../model/Game';
-import { map, switchMap, of, delay } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faHandBackFist } from '@fortawesome/free-solid-svg-icons';
-import { faScroll } from '@fortawesome/free-solid-svg-icons';
-import { faScissors } from '@fortawesome/free-solid-svg-icons';
+import { faHandBackFist, faScissors, faScroll } from '@fortawesome/free-solid-svg-icons';
+import { Observable, Subscription, catchError, delay, map, switchMap, tap, throwError } from 'rxjs';
+import { GameSelectComponent } from '../game-select/game-select.component';
+import { Game } from '../model/Game';
 import { Choice, Match } from '../model/match';
 import { ResultComponent } from '../result/result.component';
-import {
-  trigger,
-  style,
-  animate,
-  transition,
-} from '@angular/animations';
-import { GameSelectComponent } from '../game-select/game-select.component';
 import { GameService } from '../service/game.service';
 import { PlayService } from '../service/play.service';
 
@@ -40,7 +38,7 @@ import { PlayService } from '../service/play.service';
     RouterLink,
     FontAwesomeModule,
     UpperCasePipe,
-    JsonPipe,
+    AsyncPipe,
     ResultComponent,
     GameSelectComponent
   ],
@@ -58,8 +56,19 @@ import { PlayService } from '../service/play.service';
     ]),
   ]
 })
-export class PlayComponent {
-  game!: Game;
+export class PlayComponent implements OnDestroy{
+  game$: Observable<Game> = this.route.params.pipe(
+    map(p => p['id']),
+    switchMap(id => this.gameService.getGame(id)),
+    tap(game => {
+      this.previousMatches = game.matches;
+      this.feedback = {};
+    }),
+    catchError(error => {
+      this.feedback = { type: 'warning', message: 'Error loading' };
+      return throwError(() => console.log(error));
+    })
+  );
   match!: Match;
   resultMatch: Match | undefined = undefined;
   playerSelection!: number;
@@ -69,6 +78,7 @@ export class PlayComponent {
   faScissors = faScissors;
   previousMatches: Match[] = [];
   loading: boolean = false;
+  subscription: Subscription = new Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -76,29 +86,8 @@ export class PlayComponent {
     private gameService: GameService,
     private playService: PlayService) { }
 
-  ngOnInit() {
-    this.route.params.pipe(
-      map(p => p['id']),
-      switchMap(id => {
-        if (id === 'new') {
-          const game: Game = {
-            name: '',
-            matches: []
-          }
-          return of(game);
-        }
-        return this.gameService.getGame(id);
-      })
-    ).subscribe({
-      next: (game) => {
-        this.game = game;
-        this.previousMatches = game.matches;
-        this.feedback = {};
-      },
-      error: () => {
-        this.feedback = { type: 'warning', message: 'Error loading' };
-      }
-    });
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   public onPlayerSelectionEvent($event: number) {
@@ -113,16 +102,14 @@ export class PlayComponent {
     await this.router.navigate(['/games']);
   }
 
-  save() {
+  save(game: Game) {
     this.loading = true;
     this.resultMatch = undefined;
     const match: Match = {
       player1Choice: this.playerSelection,
       isTie: false,
     }
-
-    this.playService.play(this.game.id, match)
-    this.playService.play(this.game.id, match).pipe(delay(700)).subscribe(
+    this.subscription = this.playService.play(game.id, match).pipe(delay(700)).subscribe(
       response => {
         this.resultMatch = response;
         this.previousMatches.push(response)

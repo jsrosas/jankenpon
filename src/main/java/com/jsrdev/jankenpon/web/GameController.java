@@ -27,10 +27,9 @@ public class GameController {
     GameService gameService;
 
     private final Logger log = LoggerFactory.getLogger(GameController.class);
-    private final GameRepository gameRepository;
 
     public GameController(GameRepository gameRepository) {
-        this.gameRepository = gameRepository;
+
     }
 
     @GetMapping("/games")

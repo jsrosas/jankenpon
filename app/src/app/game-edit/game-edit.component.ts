@@ -1,12 +1,13 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { Component, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card'
+import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { map, switchMap, of } from 'rxjs';
+import { Observable, Subscription, catchError, map, of, switchMap, tap, throwError } from 'rxjs';
 import { Game } from '../model/Game';
 import { Player } from '../model/player';
 import { GameService } from '../service/game.service';
@@ -22,52 +23,58 @@ import { GameService } from '../service/game.service';
     MatIconModule,
     MatCardModule,
     RouterLink,
+    AsyncPipe
   ],
   templateUrl: './game-edit.component.html',
   styleUrl: './game-edit.component.css'
 })
 
-export class GameEditComponent implements OnInit {
-
-  game!: Game;
+export class GameEditComponent implements OnDestroy{
+  subscription: Subscription = new Subscription;
   player!: Player;
   feedback: any = {};
-
-  constructor(private route: ActivatedRoute, private router: Router, private gameService: GameService) {
-  }
-
-  ngOnInit() {
-    this.route.params.pipe(
-      map(p => p['id']),
-      switchMap(id => {
-        if (id === 'new') {
-          const game: Game = {
-            name: '',
-            matches: []
-          }
-          return of(game);
+  game$: Observable<Game> = this.route.params.pipe(
+    map(p => p['id']),
+    switchMap(id => {
+      if (id === 'new') {
+        this.player = {
+          name: '',
+          defaultComputer: false
         }
-        return this.gameService.getGame(id);
-      })
-    ).subscribe({
-      next: game => {
-        this.game = game;
-        const player = game.players?.find(player => !player.defaultComputer);
-        this.player = player ?? {name:'', defaultComputer: false}
-        this.feedback = {};
-      },
-      error: () => {
-        this.feedback = {type: 'warning', message: 'Error loading'};
+        const game: Game = {
+          name: '',
+          matches: [],
+        }
+        return of(game);
       }
-    });
+      return this.gameService.getGame(id).pipe(
+        tap((game: Game) => {
+          const player = game.players?.find((player: Player) => !player.defaultComputer);
+          this.player = player ?? {name:'', defaultComputer: false}
+          this.feedback = {};
+        })
+      );
+    }),
+    catchError(error => {
+      this.feedback = { type: 'warning', message: 'Error loading' };
+      return throwError(() => console.log(error));
+    })
+  );
+
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private gameService: GameService) {}
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
-  save() {
-    const id = this.game.id;
-    this.game.players = [this.player]
+  save(game: Game) {
+    const id = game.id;
+    game.players = [this.player]
     const method = id ? 'put' : 'post';
-    this.gameService.saveGame(this.game, method, id)
-    this.gameService.saveGame(this.game, method, id).subscribe({
+    this.subscription = this.gameService.saveGame(game, method, id).subscribe({
       next: () => {
         this.feedback = {type: 'success', message: 'Save was successful!'};
         setTimeout(async () => {
