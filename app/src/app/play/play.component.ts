@@ -107,7 +107,7 @@ export class PlayComponent implements OnDestroy{
     this.resultMatch = undefined;
     const match: Match = {
       player1Choice: this.playerSelection,
-      isTie: false,
+      tie: false,
     }
     this.subscription = this.playService.play(game.id, match).pipe(delay(700)).subscribe(
       response => {

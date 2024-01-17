@@ -9,4 +9,5 @@ public class GameStatisticsDTO {
     private Long totalMatches;
     private Long totalMatchesWonByComputer;
     private Long totalMatchesWonByPlayer;
+    private Long totalTies;
 }

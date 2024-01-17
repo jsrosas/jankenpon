@@ -7,9 +7,7 @@
             <app-game-select [match]="match" [isReadOnly]="true"></app-game-select>
         </mat-card-content>
         <mat-card-footer>
-            <mat-card-title class="title_center alert-success">
-                {{resultLabel}}
-            </mat-card-title>
+            <app-winner [match]="match" [game]="game"></app-winner>
         </mat-card-footer>
     </mat-card>
     @if(match.gameStatistics){

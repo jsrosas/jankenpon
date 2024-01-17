@@ -7,4 +7,6 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
 
     long countByGameIdAndWinnerId(long gameId, long winnerId);
 
+    long countByGameIdAndIsTie(long gameId, boolean isTie);
+
 }

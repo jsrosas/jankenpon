@@ -13,25 +13,21 @@ import java.util.Optional;
 @Service
 public class MatchService {
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
     @Autowired
     GameRepository gameRepository;
 
     public Optional<MatchDTO> saveMatch(Match match, Long gameId, OAuth2User principal){
-        Map<String, Object> details = principal.getAttributes();
-        String userId = details.get("sub").toString();
-        Optional<User> user = userRepository.findById(userId);
+        User user = userService.getUser(principal);
         Optional<Game> game = Optional
                 .ofNullable(gameRepository.findById(gameId).orElseThrow(() -> new NotFoundException("Game Not Found")));
         return Optional.of(game.map(value -> {
             match.setGame(value);
-            match.setUser(user.orElse(new User(userId,
-                    details.get("name").toString(), details.get("email").toString())));
+            match.setUser(user);
             PlayService.setDefaultComputerPlayerChoice(match);
             PlayService.playMatch(match);
             value.getMatches().add(match);
-
             gameRepository.save(value);
             return MatchDTO.buildFromRecord(match);
         }).orElseThrow());

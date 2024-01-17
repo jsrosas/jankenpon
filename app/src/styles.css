@@ -57,3 +57,9 @@ ol.breadcrumb li {
   background-color: #f8d7da;
   border-color: #f5c6cb;
 }
+
+.alert-warning {
+  color: #ae8904;
+  background-color: #dac477;
+  border-color: #dac477;
+}

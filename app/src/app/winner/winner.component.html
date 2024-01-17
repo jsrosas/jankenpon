@@ -1,0 +1,7 @@
+<mat-card-title class="title_center" 
+    [class.alert-success]="winnerClass == 'player'"
+    [class.alert-warning]="winnerClass == 'tie'"
+    [class.alert-error]="winnerClass == 'computer'"
+>
+    {{resultLabel}}
+</mat-card-title>

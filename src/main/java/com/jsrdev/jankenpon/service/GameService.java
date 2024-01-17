@@ -19,7 +19,7 @@ public class GameService {
     GameRepository gameRepository;
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
     @Autowired
     PlayerRepository playerRepository;
@@ -40,11 +40,8 @@ public class GameService {
     }
 
     public GameDTO saveGame(Game game, OAuth2User principal){
-        Map<String, Object> details = principal.getAttributes();
-        String userId = details.get("sub").toString();
-        Optional<User> user = userRepository.findById(userId);
-        game.setUser(user.orElse(new User(userId,
-                details.get("name").toString(), details.get("email").toString())));
+        User user = userService.getUser(principal);
+        game.setUser(user);
         Player computerDefaultPlayer = playerRepository.findById(Player.DEFAULT_COMPUTER_ID).orElseThrow();
         game.getPlayers().add(computerDefaultPlayer);
         Game result = gameRepository.save(game);

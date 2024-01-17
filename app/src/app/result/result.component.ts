@@ -1,4 +1,4 @@
-import { JsonPipe, UpperCasePipe } from '@angular/common';
+import { NgClass, UpperCasePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
@@ -8,7 +8,7 @@ import { GameSelectComponent } from '../game-select/game-select.component';
 import { GameStatisticsComponent } from '../game-statistics/game-statistics.component';
 import { Game } from '../model/Game';
 import { Choice, Match } from '../model/match';
-import { Player } from '../model/player';
+import { WinnerComponent } from '../winner/winner.component';
 
 @Component({
   selector: 'app-result',
@@ -18,9 +18,9 @@ import { Player } from '../model/player';
     MatButtonToggleModule,
     FontAwesomeModule,
     UpperCasePipe,
-    JsonPipe,
     GameSelectComponent,
     GameStatisticsComponent,
+    WinnerComponent,
   ],
   templateUrl: './result.component.html',
   styleUrl: './result.component.css',
@@ -34,7 +34,6 @@ export class ResultComponent {
   faHandBackFist = faHandBackFist;
   faScroll = faScroll;
   faScissors = faScissors;
-  winner?: Player;
 
   public get computerSelectionLabel() {
     if (this.match && this.match.player2Choice || this.match?.player2Choice === 0) {
@@ -42,10 +41,5 @@ export class ResultComponent {
     } else {
       return "Unable to find a choice for computer."
     }
-  }
-
-  public get resultLabel() {
-    this.winner = this.game?.players?.find(player => player.id === this.match?.winnerId);
-    return this.winner ? `Winner is ${this.winner?.name}` : 'It is a Tie';
   }
 }
