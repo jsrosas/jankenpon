@@ -4,12 +4,14 @@ import com.jsrdev.jankenpon.dto.GameDTO;
 import com.jsrdev.jankenpon.model.Game;
 import com.jsrdev.jankenpon.model.GameRepository;
 import com.jsrdev.jankenpon.service.GameService;
+import com.jsrdev.jankenpon.service.OwnerShipService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
@@ -26,11 +28,11 @@ public class GameController {
     @Autowired
     GameService gameService;
 
+    @Autowired
+    OwnerShipService ownerShipService;
     private final Logger log = LoggerFactory.getLogger(GameController.class);
 
-    public GameController(GameRepository gameRepository) {
-
-    }
+    public GameController(GameRepository gameRepository) {}
 
     @GetMapping("/games")
     ResponseEntity<Collection<GameDTO>> games(Principal principal) {
@@ -40,7 +42,8 @@ public class GameController {
     }
 
     @GetMapping("/game/{id}")
-    ResponseEntity<?> getGame(@PathVariable Long id) {
+    @PreAuthorize("@ownerShipService.check(#id,#principal)")
+    ResponseEntity<?> getGame(@PathVariable Long id, @AuthenticationPrincipal OAuth2User principal) {
         Optional<GameDTO> game = gameService.getGame(id);
         return game.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -54,6 +57,7 @@ public class GameController {
     }
 
     @PutMapping("/game/{id}")
+    @PreAuthorize("@ownerShipService.check(#game.getId(),#principal)")
     ResponseEntity<?> updateGame(@Valid @RequestBody Game game, @AuthenticationPrincipal OAuth2User principal) {
         log.info("Request to update game: {}", game);
         Optional<GameDTO> result = gameService.updateGame(game, principal);

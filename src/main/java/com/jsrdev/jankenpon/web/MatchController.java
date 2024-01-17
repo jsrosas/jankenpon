@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,7 @@ public class MatchController {
     private final Logger log = LoggerFactory.getLogger(MatchController.class);
 
     @PostMapping("/match")
+    @PreAuthorize("@ownerShipService.check(#gameId,#principal)")
     ResponseEntity<?> createMatch(@Valid @RequestBody Match match,
                                   @AuthenticationPrincipal OAuth2User principal,
                                   @PathVariable Long gameId) {

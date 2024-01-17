@@ -3,6 +3,7 @@ package com.jsrdev.jankenpon.api.service;
 import com.jsrdev.jankenpon.dto.GameDTO;
 import com.jsrdev.jankenpon.model.*;
 import com.jsrdev.jankenpon.service.GameService;
+import com.jsrdev.jankenpon.service.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +26,7 @@ public class GameServiceTests {
     private GameRepository gameRepository;
 
     @Mock
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Mock
     private PlayerRepository playerRepository;
@@ -74,7 +75,7 @@ public class GameServiceTests {
         Player player = new Player("livePlayer");
         Set<Player> players = new HashSet<>();
         players.add(player);
-        when(userRepository.findById("foo_user")).thenReturn(Optional.of(user));
+        when(userService.getUser(principal)).thenReturn(user);
         Game game = new Game("Test");
         game.setPlayers(players);
         game.setId(1L);

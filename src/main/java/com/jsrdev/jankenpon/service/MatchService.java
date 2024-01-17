@@ -2,12 +2,14 @@ package com.jsrdev.jankenpon.service;
 
 import com.jsrdev.jankenpon.dto.MatchDTO;
 import com.jsrdev.jankenpon.exception.NotFoundException;
-import com.jsrdev.jankenpon.model.*;
+import com.jsrdev.jankenpon.model.Game;
+import com.jsrdev.jankenpon.model.GameRepository;
+import com.jsrdev.jankenpon.model.Match;
+import com.jsrdev.jankenpon.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.Optional;
 
 @Service

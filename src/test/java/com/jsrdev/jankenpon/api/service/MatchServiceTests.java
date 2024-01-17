@@ -2,9 +2,9 @@ package com.jsrdev.jankenpon.api.service;
 
 import com.jsrdev.jankenpon.dto.MatchDTO;
 import com.jsrdev.jankenpon.model.*;
-import com.jsrdev.jankenpon.service.GameService;
 import com.jsrdev.jankenpon.service.MatchService;
 import com.jsrdev.jankenpon.service.PlayService;
+import com.jsrdev.jankenpon.service.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,10 +25,7 @@ public class MatchServiceTests {
     private GameRepository gameRepository;
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private PlayService playService;
+    private UserService userService;
 
     @InjectMocks
     private MatchService matchService;
@@ -57,6 +54,7 @@ public class MatchServiceTests {
         existingGame.setId(1L);
         existingGame.setMatches(matches);
         when(gameRepository.findById(1L)).thenReturn(Optional.of(existingGame));
+        when(userService.getUser(principal)).thenReturn(user);
         Match match = new Match();
         match.setPlayer1Choice(Choice.SCISSORS.ordinal());
         MatchDTO matchDTO = matchService.saveMatch(match, existingGame.getId(), principal).get();
