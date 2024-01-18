@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class OwnerShipService {
+public class OwnershipService {
 
     @Autowired
     GameRepository gameRepository;

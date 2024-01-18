@@ -4,6 +4,7 @@ import com.jsrdev.jankenpon.dto.MatchDTO;
 import com.jsrdev.jankenpon.model.Match;
 import com.jsrdev.jankenpon.service.GameStatisticsService;
 import com.jsrdev.jankenpon.service.MatchService;
+import com.jsrdev.jankenpon.service.OwnershipService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +29,13 @@ public class MatchController {
     @Autowired
     GameStatisticsService gameStatisticsService;
 
+    @Autowired
+    OwnershipService ownershipService;
+
     private final Logger log = LoggerFactory.getLogger(MatchController.class);
 
     @PostMapping("/match")
-    @PreAuthorize("@ownerShipService.check(#gameId,#principal)")
+    @PreAuthorize("@ownershipService.check(#gameId,#principal)")
     ResponseEntity<?> createMatch(@Valid @RequestBody Match match,
                                   @AuthenticationPrincipal OAuth2User principal,
                                   @PathVariable Long gameId) {

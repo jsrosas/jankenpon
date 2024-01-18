@@ -34,7 +34,6 @@ export class WinnerComponent {
     if(winner?.defaultComputer === false){
       this._winnerClass = 'player'
     }
-    console.log(this._winnerClass);
     return this._winnerClass;
   }
 

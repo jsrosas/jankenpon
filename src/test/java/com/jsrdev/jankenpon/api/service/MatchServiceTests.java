@@ -3,7 +3,6 @@ package com.jsrdev.jankenpon.api.service;
 import com.jsrdev.jankenpon.dto.MatchDTO;
 import com.jsrdev.jankenpon.model.*;
 import com.jsrdev.jankenpon.service.MatchService;
-import com.jsrdev.jankenpon.service.PlayService;
 import com.jsrdev.jankenpon.service.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

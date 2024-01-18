@@ -4,7 +4,7 @@ import com.jsrdev.jankenpon.dto.GameDTO;
 import com.jsrdev.jankenpon.model.Game;
 import com.jsrdev.jankenpon.model.GameRepository;
 import com.jsrdev.jankenpon.service.GameService;
-import com.jsrdev.jankenpon.service.OwnerShipService;
+import com.jsrdev.jankenpon.service.OwnershipService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class GameController {
     GameService gameService;
 
     @Autowired
-    OwnerShipService ownerShipService;
+    OwnershipService ownershipService;
     private final Logger log = LoggerFactory.getLogger(GameController.class);
 
     public GameController(GameRepository gameRepository) {}
@@ -42,7 +42,7 @@ public class GameController {
     }
 
     @GetMapping("/game/{id}")
-    @PreAuthorize("@ownerShipService.check(#id,#principal)")
+    @PreAuthorize("@ownershipService.check(#id,#principal)")
     ResponseEntity<?> getGame(@PathVariable Long id, @AuthenticationPrincipal OAuth2User principal) {
         Optional<GameDTO> game = gameService.getGame(id);
         return game.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -57,7 +57,7 @@ public class GameController {
     }
 
     @PutMapping("/game/{id}")
-    @PreAuthorize("@ownerShipService.check(#game.getId(),#principal)")
+    @PreAuthorize("@ownershipService.check(#game.getId(),#principal)")
     ResponseEntity<?> updateGame(@Valid @RequestBody Game game, @AuthenticationPrincipal OAuth2User principal) {
         log.info("Request to update game: {}", game);
         Optional<GameDTO> result = gameService.updateGame(game, principal);
