@@ -25,7 +25,7 @@ export class GamesListComponent {
   title = 'Game List';
   loading = false;
   games: Game[] = [];
-  displayedColumns = ['id', 'players', 'actions'];
+  displayedColumns = ['id', 'players', 'match_count', 'actions'];
   feedback: any = {};
   games$ : Observable<Game[]> = this.gameService.getGames().pipe(
     take(1),

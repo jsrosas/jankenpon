@@ -26,7 +26,13 @@
     <mat-cell *matCellDef="let item">
       <ng-container *ngFor="let player of item.players; let i=index; let isLast=last">
         {{player.name}} <span *ngIf="!isLast">&#44;&nbsp;</span> 
-    </ng-container>
+      </ng-container>
+    </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="match_count">
+    <mat-header-cell *matHeaderCellDef> Match Count </mat-header-cell>
+    <mat-cell *matCellDef="let item">
+      {{item.matches.length}}
     </mat-cell>
   </ng-container>
   
