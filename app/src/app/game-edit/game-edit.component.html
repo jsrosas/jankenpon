@@ -1,0 +1,35 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+      <li class="breadcrumb-item"><a routerLink="/games">Games</a></li>
+      <li class="breadcrumb-item active">Edit Game</li>
+    </ol>
+</nav>
+  
+  <h2>Game Information</h2>
+  @if (feedback.message) {
+  <div class="alert alert-{{feedback.type}}">{{ feedback.message }}</div>
+  }
+  @if (game$ | async; as game ) {
+    <form #editForm="ngForm" (ngSubmit)="save(game)">
+      <mat-card>
+        <mat-card-content>
+          <mat-form-field class="example-full-width">
+            <mat-label>Name</mat-label>
+            <input matInput [(ngModel)]="game.name" id="name" name="name" placeholder="Name of the Game" required>
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <mat-label>Player Name</mat-label>
+            <input matInput [(ngModel)]="player.name" id="player-name" name="player-name" placeholder="Player Name" required>
+          </mat-form-field>
+        </mat-card-content>
+        <mat-card-footer>
+          <div class="button-row" role="group">
+            <button type="submit" mat-raised-button color="primary" [disabled]="!editForm.form.valid" id="save">Save</button>
+            <button type="button" mat-button color="accent" (click)="cancel()" id="cancel">Cancel</button>
+        </div>
+        </mat-card-footer>
+      </mat-card>
+    </form>
+  }
+  

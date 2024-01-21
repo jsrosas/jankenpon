@@ -1,0 +1,14 @@
+<div style="display: block; margin-left: auto;margin-right: auto; width: 40%;">
+  <mat-button-toggle-group #group="matButtonToggleGroup" (change)="onChange($event)" value={{match?.player2Choice}}
+    [disabled]="isReadOnly">
+    <mat-button-toggle type=number value=0 aria-label="Text align left">
+      <fa-icon [icon]="faHandBackFist" size="6x"></fa-icon>
+    </mat-button-toggle>
+    <mat-button-toggle type=number value=1 aria-label="Text align center">
+      <fa-icon [icon]="faScroll" size="6x"></fa-icon>
+    </mat-button-toggle>
+    <mat-button-toggle type=number value=2 aria-label="Text align right">
+      <fa-icon [icon]="faScissors" size="6x"></fa-icon>
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+</div>

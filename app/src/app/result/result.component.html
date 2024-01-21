@@ -1,0 +1,18 @@
+@if(match){
+    <mat-card style="margin-top: 10px;">
+        <mat-card-header>
+            <mat-card-title>Computer Selection: {{computerSelectionLabel | uppercase}}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <app-game-select [match]="match" [isReadOnly]="true"></app-game-select>
+        </mat-card-content>
+        <mat-card-footer>
+            <app-winner [match]="match" [game]="game"></app-winner>
+        </mat-card-footer>
+    </mat-card>
+    @if(match.gameStatistics){
+        <app-game-statistics [statistics]="match.gameStatistics"></app-game-statistics>
+    }
+}
+
+
