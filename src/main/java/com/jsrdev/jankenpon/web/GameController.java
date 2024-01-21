@@ -2,13 +2,10 @@ package com.jsrdev.jankenpon.web;
 
 import com.jsrdev.jankenpon.dto.GameDTO;
 import com.jsrdev.jankenpon.model.Game;
-import com.jsrdev.jankenpon.model.GameRepository;
 import com.jsrdev.jankenpon.service.GameService;
-import com.jsrdev.jankenpon.service.OwnershipService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,14 +22,16 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class GameController {
-    @Autowired
-    GameService gameService;
 
-    @Autowired
-    OwnershipService ownershipService;
+    private GameService gameService;
+
     private final Logger log = LoggerFactory.getLogger(GameController.class);
 
-    public GameController(GameRepository gameRepository) {}
+    public GameController(
+            GameService gameService
+    ) {
+        this.gameService = gameService;
+    }
 
     @GetMapping("/games")
     ResponseEntity<Collection<GameDTO>> games(Principal principal) {
@@ -62,17 +61,7 @@ public class GameController {
         log.info("Request to update game: {}", game);
         Optional<GameDTO> result = gameService.updateGame(game, principal);
         return result.map(value -> {
-            try {
-                return ResponseEntity.created(
-                        generateCreatedURI(value.getId())
-                ).body(result);
-            } catch (URISyntaxException e) {
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+                return ResponseEntity.ok().body(result);
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    private URI generateCreatedURI(Long gameId) throws URISyntaxException{
-        return new URI("/api/game/" + gameId);
     }
 }

@@ -3,7 +3,7 @@ package com.jsrdev.jankenpon.api.service;
 import com.jsrdev.jankenpon.model.Game;
 import com.jsrdev.jankenpon.model.GameRepository;
 import com.jsrdev.jankenpon.model.User;
-import com.jsrdev.jankenpon.service.OwnershipService;
+import com.jsrdev.jankenpon.service.OwnershipServiceImpl;
 import com.jsrdev.jankenpon.service.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class OwnershipServiceTests {
+public class OwnershipServiceImplTests {
     @Mock
     GameRepository gameRepository;
 
@@ -30,7 +30,7 @@ public class OwnershipServiceTests {
     UserService userService;
 
     @InjectMocks
-    private OwnershipService ownershipService;
+    private OwnershipServiceImpl ownershipServiceImpl;
 
     @Test
     public void OwnershipService_Check_ReturnTrue(){
@@ -48,7 +48,7 @@ public class OwnershipServiceTests {
         existingGame.setUser(user);
         when(gameRepository.findById(1L)).thenReturn(Optional.of(existingGame));
         when(userService.getUser(principal)).thenReturn(user);
-        boolean result = ownershipService.check(existingGame.getId(), principal);
+        boolean result = ownershipServiceImpl.check(existingGame.getId(), principal);
         Assertions.assertThat(result).isTrue();
     }
 
@@ -69,7 +69,7 @@ public class OwnershipServiceTests {
         existingGame.setUser(userOwner);
         when(gameRepository.findById(1L)).thenReturn(Optional.of(existingGame));
         when(userService.getUser(principal)).thenReturn(user);
-        boolean result = ownershipService.check(existingGame.getId(), principal);
+        boolean result = ownershipServiceImpl.check(existingGame.getId(), principal);
         Assertions.assertThat(result).isFalse();
     }
 }

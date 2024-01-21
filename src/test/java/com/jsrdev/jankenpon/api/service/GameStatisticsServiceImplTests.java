@@ -3,7 +3,7 @@ package com.jsrdev.jankenpon.api.service;
 import com.jsrdev.jankenpon.TestHelper;
 import com.jsrdev.jankenpon.dto.GameStatisticsDTO;
 import com.jsrdev.jankenpon.model.*;
-import com.jsrdev.jankenpon.service.GameStatisticsService;
+import com.jsrdev.jankenpon.service.GameStatisticsServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,13 +14,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class GameStatisticsServiceTests {
+public class GameStatisticsServiceImplTests {
 
     @Mock
     private MatchRepository matchRepository;
 
     @InjectMocks
-    private GameStatisticsService gameStatisticsService;
+    private GameStatisticsServiceImpl gameStatisticsServiceImpl;
 
     @Test
     public void GameStatisticsService_BuildFromGame_ReturnGameStatisticsDTO() {
@@ -33,7 +33,7 @@ public class GameStatisticsServiceTests {
                 thenReturn((long) game.getMatches().size());
         when(matchRepository.countByGameIdAndWinnerId(game.getId(), player.getId())).
                 thenReturn((long) game.getMatches().size());
-        GameStatisticsDTO gameStatisticsDTO = gameStatisticsService.buildStatisticsFromGame(match.getGame());
+        GameStatisticsDTO gameStatisticsDTO = gameStatisticsServiceImpl.buildStatisticsFromGame(match.getGame());
         Assertions.assertThat(gameStatisticsDTO).isNotNull();
         Assertions.assertThat(gameStatisticsDTO.getTotalMatches()).isEqualTo(1);
         Assertions.assertThat(gameStatisticsDTO.getTotalMatchesWonByComputer()).isEqualTo(1);

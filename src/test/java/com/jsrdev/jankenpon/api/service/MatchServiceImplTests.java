@@ -2,7 +2,7 @@ package com.jsrdev.jankenpon.api.service;
 
 import com.jsrdev.jankenpon.dto.MatchDTO;
 import com.jsrdev.jankenpon.model.*;
-import com.jsrdev.jankenpon.service.MatchService;
+import com.jsrdev.jankenpon.service.MatchServiceImpl;
 import com.jsrdev.jankenpon.service.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import java.util.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class MatchServiceTests {
+public class MatchServiceImplTests {
     @Mock
     private GameRepository gameRepository;
 
@@ -27,7 +27,7 @@ public class MatchServiceTests {
     private UserService userService;
 
     @InjectMocks
-    private MatchService matchService;
+    private MatchServiceImpl matchServiceImpl;
 
     @Test
     public void MatchService_SaveGame_ReturnGameDTO(){
@@ -56,7 +56,7 @@ public class MatchServiceTests {
         when(userService.getUser(principal)).thenReturn(user);
         Match match = new Match();
         match.setPlayer1Choice(Choice.SCISSORS.ordinal());
-        MatchDTO matchDTO = matchService.saveMatch(match, existingGame.getId(), principal).get();
+        MatchDTO matchDTO = matchServiceImpl.saveMatch(match, existingGame.getId(), principal).get();
         Assertions.assertThat(matchDTO).isNotNull();
         Assertions.assertThat(matchDTO.getPlayer1Choice()).isEqualTo(2);
     }

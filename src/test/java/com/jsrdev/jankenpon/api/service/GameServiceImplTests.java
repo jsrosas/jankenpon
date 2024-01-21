@@ -2,7 +2,7 @@ package com.jsrdev.jankenpon.api.service;
 
 import com.jsrdev.jankenpon.dto.GameDTO;
 import com.jsrdev.jankenpon.model.*;
-import com.jsrdev.jankenpon.service.GameService;
+import com.jsrdev.jankenpon.service.GameServiceImpl;
 import com.jsrdev.jankenpon.service.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import java.util.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class GameServiceTests {
+public class GameServiceImplTests {
 
     @Mock
     private GameRepository gameRepository;
@@ -32,7 +32,7 @@ public class GameServiceTests {
     private PlayerRepository playerRepository;
 
     @InjectMocks
-    private GameService gameService;
+    private GameServiceImpl gameServiceImpl;
 
 
     @Test
@@ -53,7 +53,7 @@ public class GameServiceTests {
         games.add(game1);
         games.add(game2);
         when(gameRepository.findAllByUserId(principal.getName())).thenReturn(games);
-        Collection<GameDTO> gameDTOS = gameService.getGames(principal);
+        Collection<GameDTO> gameDTOS = gameServiceImpl.getGames(principal);
         Assertions.assertThat(gameDTOS).isNotNull();
         Assertions.assertThat(gameDTOS.size()).isEqualTo(2);
     }
@@ -81,7 +81,7 @@ public class GameServiceTests {
         game.setId(1L);
         when(gameRepository.save(game)).thenReturn(game);
         when(playerRepository.findById(Player.DEFAULT_COMPUTER_ID)).thenReturn(Optional.of(computerDefaultPlayer));
-        GameDTO gameDTO = gameService.saveGame(game, principal);
+        GameDTO gameDTO = gameServiceImpl.saveGame(game, principal);
         Assertions.assertThat(gameDTO).isNotNull();
         Assertions.assertThat(gameDTO.getId()).isEqualTo(game.getId());
         Assertions.assertThat(gameDTO.getName()).isEqualTo(game.getName());
@@ -110,7 +110,7 @@ public class GameServiceTests {
         updateGame.setId(1L);
         updateGame.setPlayers(players);
         when(gameRepository.save(updateGame)).thenReturn(updateGame);
-        GameDTO updatedGame = gameService.updateGame(updateGame, principal).get();
+        GameDTO updatedGame = gameServiceImpl.updateGame(updateGame, principal).get();
         Assertions.assertThat(updatedGame).isNotNull();
         Assertions.assertThat(updatedGame.getName()).isEqualTo("TestUpdate");
     }

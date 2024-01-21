@@ -2,13 +2,10 @@ package com.jsrdev.jankenpon.web;
 
 import com.jsrdev.jankenpon.dto.MatchDTO;
 import com.jsrdev.jankenpon.model.Match;
-import com.jsrdev.jankenpon.service.GameStatisticsService;
-import com.jsrdev.jankenpon.service.MatchService;
-import com.jsrdev.jankenpon.service.OwnershipService;
+import com.jsrdev.jankenpon.service.*;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,14 +20,23 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/game/{gameId}")
 public class MatchController {
-    @Autowired
-    MatchService matchService;
 
-    @Autowired
+    MatchService matchService;
+    OwnershipService ownershipService;
+
+
     GameStatisticsService gameStatisticsService;
 
-    @Autowired
-    OwnershipService ownershipService;
+    public MatchController(
+            MatchService matchService,
+            OwnershipService ownershipService,
+            GameStatisticsService gameStatisticsService
+    ){
+        this.matchService = matchService;
+        this.ownershipService = ownershipService;
+        this.gameStatisticsService = gameStatisticsService;
+    }
+
 
     private final Logger log = LoggerFactory.getLogger(MatchController.class);
 

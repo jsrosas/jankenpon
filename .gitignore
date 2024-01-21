@@ -36,3 +36,4 @@ build/
 ### Angular ###
 app/node_modules
 app/.angular
+app/node
